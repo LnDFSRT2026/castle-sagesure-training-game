@@ -2,374 +2,560 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SageSure LND-30688 - Interactive Training & Castle Builder</title>
-    <!-- QR Code Generator -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SageSure LND-30688 - Interactive Castle Training Game</title>
     <style>
         :root {
             --primary: #123c69;
-            --primary-light: #315b85;
+            --primary-light: #1f568f;
             --secondary: #00b4d8;
             --accent: #ffb703;
-            --background: #f4f6f9;
-            --card-bg: #ffffff;
-            --text: #2b2d42;
-            --success: #2ec4b6;
-            --error: #e71d36;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-card: #27354f;
+            --card-front-bg: #162c46;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+            --blueprint-cyan: #38bdf8;
         }
+
         * {
             box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
         }
+
         header {
-            background-color: var(--primary);
-            color: white;
-            padding: 18px 24px;
+            background: linear-gradient(135deg, #0f172a, var(--primary));
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        header .header-left h1 {
-            margin: 0;
-            font-size: 1.7rem;
-            letter-spacing: 0.5px;
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        header .header-left p {
-            margin: 4px 0 0 0;
-            color: var(--secondary);
-            font-size: 0.95rem;
-            font-weight: bold;
+
+        .brand-icon {
+            font-size: 1.8rem;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--blueprint-cyan);
+            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .header-controls {
+
+        .brand-text h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .brand-text p {
+            font-size: 0.8rem;
+            color: var(--blueprint-cyan);
+            font-weight: 600;
+        }
+
+        .header-actions {
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
-        .btn-header {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1.5px solid rgba(255,255,255,0.4);
-            padding: 8px 14px;
+
+        .btn {
+            background: var(--secondary);
+            color: #0f172a;
+            border: none;
+            padding: 9px 16px;
             border-radius: 8px;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
             font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
-        .btn-header:hover {
-            background: rgba(255,255,255,0.3);
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border: 1.5px solid rgba(255,255,255,0.25);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.18);
             border-color: white;
         }
-        .container {
-            max-width: 1400px;
-            margin: 20px auto;
-            padding: 0 20px;
+
+        .btn-accent {
+            background: linear-gradient(135deg, #ffb703, #fb8500);
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        /* Banner for Direct Sharing */
+        .share-banner {
+            background: linear-gradient(90deg, #1e293b, #172554);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.88rem;
+        }
+
+        .share-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .pin-pill {
+            background: #0f172a;
+            color: var(--accent);
+            border: 1.5px dashed var(--blueprint-cyan);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        /* Main 2-Column Responsive Layout */
+        .app-container {
+            max-width: 1440px;
+            width: 100%;
+            margin: 15px auto;
+            padding: 0 16px;
             display: grid;
             grid-template-columns: 1.25fr 1fr;
-            gap: 25px;
+            gap: 20px;
             flex-grow: 1;
-            width: 100%;
         }
-        @media (max-width: 1024px) {
-            .container {
+
+        @media (max-width: 1040px) {
+            .app-container {
                 grid-template-columns: 1fr;
             }
         }
-        .panel {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            height: fit-content;
-            border: 1px solid #e2e8f0;
-        }
-        .main-content {
+
+        /* Left Side: Study & Interactive Controls */
+        .study-panel {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
         }
+
         .day-nav {
             display: flex;
-            background: white;
-            padding: 8px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            background: var(--surface);
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
             overflow-x: auto;
             gap: 6px;
-            border: 1px solid #e2e8f0;
         }
+
         .day-tab {
-            padding: 9px 14px;
+            padding: 10px 14px;
+            background: transparent;
+            color: var(--text-muted);
             border: none;
-            background: none;
-            font-weight: bold;
-            color: var(--primary-light);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
             cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s ease;
             white-space: nowrap;
-            font-size: 0.88rem;
+            transition: all 0.2s;
         }
+
         .day-tab.active {
-            background-color: var(--primary);
-            color: white;
+            background: var(--primary-light);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 180, 216, 0.3);
         }
+
         .day-tab:hover:not(.active) {
-            background-color: #f0f3f6;
-            color: var(--primary);
+            background: rgba(255,255,255,0.05);
+            color: #ffffff;
         }
-        .flashcard-section {
+
+        .day-content {
             display: none;
+            flex-direction: column;
+            gap: 16px;
         }
-        .flashcard-section.active {
-            display: block;
+
+        .day-content.active {
+            display: flex;
         }
+
         .intro-box {
-            background-color: #eef3f8;
-            border-left: 5px solid var(--secondary);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(23, 37, 84, 0.8));
+            border-left: 4px solid var(--secondary);
+            border-radius: 0 10px 10px 0;
             padding: 14px 18px;
-            border-radius: 4px 8px 8px 4px;
-            margin-bottom: 18px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             line-height: 1.5;
-            color: #334155;
+            color: #e2e8f0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
-        .section-heading {
-            font-size: 1.15rem;
-            color: var(--primary);
-            margin: 0 0 12px 0;
+
+        /* Flashcards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .card-card {
+            background: var(--surface);
+            border: 2px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 240px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.25s ease;
+        }
+
+        .card-card:hover {
+            border-color: var(--blueprint-cyan);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
-        .flashcards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 16px;
-            margin-bottom: 22px;
+
+        .card-tag {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .card-wrapper {
-            background-color: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            height: 250px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            transition: border-color 0.2s, transform 0.2s;
-            user-select: none;
-        }
-        .card-wrapper:hover {
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-        }
-        .card-front, .card-back {
-            width: 100%;
-            height: 100%;
+
+        .card-body {
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .card-question {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .card-answer {
+            display: none;
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 3px solid var(--success);
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.4;
+            margin-top: 10px;
+        }
+
+        .card-footer-actions {
+            display: flex;
+            gap: 8px;
             align-items: center;
-            padding: 18px;
-            box-sizing: border-box;
+        }
+
+        .btn-card {
+            flex: 1;
+            padding: 9px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
             text-align: center;
         }
-        .card-front {
-            background-color: var(--primary);
+
+        .btn-reveal {
+            background: rgba(255,255,255,0.1);
             color: white;
+            border: 1px solid rgba(255,255,255,0.25);
         }
-        .card-front h3 {
-            margin-top: 0;
-            color: var(--accent);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
+
+        .btn-reveal:hover {
+            background: rgba(255,255,255,0.2);
         }
-        .card-front p {
-            font-size: 0.98rem;
-            font-weight: 600;
-            line-height: 1.4;
-            margin: 0;
+
+        .btn-master {
+            background: var(--success);
+            color: #0f172a;
+            font-weight: 800;
         }
-        .card-back {
-            background-color: white;
-            color: var(--text);
-            display: none;
+
+        .btn-master:hover:not(:disabled) {
+            filter: brightness(1.15);
         }
-        .card-back h3 {
-            margin-top: 0;
-            color: var(--primary);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        .card-back p {
-            font-size: 0.9rem;
-            line-height: 1.4;
-            color: #334155;
-            margin: 0;
-        }
-        .card-actions {
-            margin-top: 14px;
-            display: flex;
-            gap: 10px;
-            z-index: 10;
-        }
-        .card-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .card-btn.mastered {
-            background-color: var(--success);
-            color: white;
-        }
-        .card-btn.mastered:hover {
-            background-color: #24b0a3;
-        }
-        .card-btn:disabled {
-            background-color: #cbd5e1;
-            color: #64748b;
+
+        .btn-master:disabled {
+            background: #475569;
+            color: #94a3b8;
             cursor: default;
         }
-        /* Quiz Styling */
-        .quiz-container {
-            background-color: white;
-            border-radius: 12px;
+
+        /* Quiz Box */
+        .quiz-box {
+            background: var(--surface);
+            border: 2px solid rgba(255, 183, 3, 0.3);
+            border-radius: 14px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.35);
         }
-        .quiz-container h3 {
-            margin-top: 0;
-            color: var(--primary);
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 10px;
-            font-size: 1.1rem;
+
+        .quiz-title-bar {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
         }
-        .quiz-scenario {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin: -4px 0 10px 0;
+
+        .quiz-title-bar h3 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .quiz-unlock-badge {
+            background: rgba(255, 183, 3, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .quiz-scenario-text {
+            font-size: 0.84rem;
+            color: var(--blueprint-cyan);
+            margin-bottom: 8px;
             font-style: italic;
         }
-        .quiz-options {
+
+        .quiz-q-text {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .quiz-options-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin: 16px 0;
         }
-        .option-btn {
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
+
+        .quiz-opt-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1.5px solid rgba(255,255,255,0.15);
             border-radius: 8px;
-            background: white;
+            padding: 12px 16px;
             text-align: left;
+            color: white;
             font-size: 0.92rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text);
-            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--primary-light);
-            background-color: #f8fafc;
-            transform: translateX(3px);
+
+        .quiz-opt-btn:hover:not(:disabled) {
+            border-color: var(--blueprint-cyan);
+            background: rgba(56, 189, 248, 0.12);
+            transform: translateX(4px);
         }
-        .option-btn.correct {
-            background-color: #ecfdf5 !important;
+
+        .quiz-opt-btn.correct {
+            background: rgba(16, 185, 129, 0.2) !important;
             border-color: var(--success) !important;
-            color: #065f46 !important;
+            color: #6ee7b7 !important;
             font-weight: bold;
         }
-        .option-btn.incorrect {
-            background-color: #fef2f2 !important;
+
+        .quiz-opt-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2) !important;
             border-color: var(--error) !important;
-            color: #991b1b !important;
+            color: #fca5a5 !important;
         }
-        .quiz-feedback {
-            margin-top: 12px;
-            font-weight: 600;
+
+        .quiz-feedback-box {
             display: none;
-            padding: 10px 14px;
-            border-radius: 6px;
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 8px;
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        .quiz-feedback.success {
-            color: #065f46;
-            background-color: #ecfdf5;
+
+        .quiz-feedback-box.success {
             display: block;
+            background: rgba(16, 185, 129, 0.15);
             border-left: 4px solid var(--success);
-        }
-        .quiz-feedback.error {
-            color: #991b1b;
-            background-color: #fef2f2;
-            display: block;
-            border-left: 4px solid var(--error);
+            color: #6ee7b7;
         }
 
-        /* Castle Builder Visual Section */
-        .castle-container {
+        .quiz-feedback-box.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid var(--error);
+            color: #fca5a5;
+        }
+
+        /* Right Side: Visual Castle Canvas & Stats */
+        .castle-panel {
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            height: fit-content;
+        }
+
+        .castle-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .castle-panel-header h2 {
+            font-size: 1.25rem;
+            color: #ffffff;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* BLUEPRINT CASTLE CONTAINER */
+        .castle-viewport {
             position: relative;
             width: 100%;
             height: 380px;
-            background: linear-gradient(to bottom, #020617, #0f172a, #1e1b4b);
+            background-color: #0b132b;
+            background-image: 
+                linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+            background-size: 20px 20px;
             border-radius: 12px;
-            border: 3px solid #334155;
+            border: 2px solid var(--blueprint-cyan);
             overflow: hidden;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.7);
-            margin-top: 15px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.2);
             perspective: 800px;
-            transform-style: preserve-3d;
         }
-        .castle-grass {
+
+        .castle-ground {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 45px;
-            background-color: #166534;
-            border-top: 3px solid #15803d;
+            height: 40px;
+            background: linear-gradient(to top, #14532d, #166534);
+            border-top: 2px solid #22c55e;
             z-index: 10;
         }
-        .piece {
+
+        /* VISIBLE BLUEPRINT WIREFRAME PIECES */
+        .castle-piece {
             position: absolute;
-            background-color: rgba(0, 180, 216, 0.04);
-            border: 2px dashed rgba(0, 180, 216, 0.45);
+            border: 2px dashed rgba(56, 189, 248, 0.7);
+            background: rgba(56, 189, 248, 0.06);
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.15);
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 1;
-            transform: scale(0.98);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(56, 189, 248, 0.6);
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            overflow: hidden;
         }
-        .piece.unlocked {
-            border: 3.5px solid #0f172a;
-            transform: scale(1.03);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+
+        .castle-piece.unlocked {
+            border: 2.5px solid #0f172a;
+            color: transparent;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        /* DAY 1: Foundation, Courtyard & Gatehouse */
+
+        /* Day 1 */
         #piece-foundation {
-            bottom: 35px;
+            bottom: 30px;
             left: 15%;
             width: 70%;
             height: 25px;
@@ -379,459 +565,10 @@
         #piece-foundation.unlocked {
             background: linear-gradient(135deg, #7c2d12, #c2410c);
         }
+
         #piece-courtyard {
-            bottom: 60px;
+            bottom: 55px;
             left: 20%;
             width: 60%;
-            height: 80px;
-            z-index: 12;
-        }
-        #piece-courtyard.unlocked {
-            background: linear-gradient(to right, #fef08a, #fde047);
-        }
-        #piece-gatehouse {
-            bottom: 60px;
-            left: 41%;
-            width: 18%;
-            height: 90px;
-            z-index: 14;
-            border-radius: 4px 4px 0 0;
-        }
-        #piece-gatehouse.unlocked {
-            background: linear-gradient(to bottom, #9a3412, #c2410c);
-        }
-        /* DAY 2: Walls & Drawbridge */
-        #piece-left-wall {
-            bottom: 60px;
-            left: 9%;
-            width: 11%;
-            height: 70px;
-            z-index: 13;
-        }
-        #piece-left-wall.unlocked {
-            background: linear-gradient(135deg, #64748b, #475569);
-        }
-        #piece-right-wall {
-            bottom: 60px;
-            right: 9%;
-            width: 11%;
-            height: 70px;
-            z-index: 13;
-        }
-        #piece-right-wall.unlocked {
-            background: linear-gradient(135deg, #64748b, #475569);
-        }
-        #piece-drawbridge {
-            bottom: 35px;
-            left: 44%;
-            width: 12%;
-            height: 40px;
-            border-radius: 4px 4px 0 0;
-            z-index: 16;
-            transform-origin: bottom center;
-            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #piece-drawbridge.unlocked {
-            background-color: #854d0e;
-            border-color: #451a03;
-        }
-        #piece-drawbridge.let-down {
-            transform: rotateX(75deg) scaleY(1.35) !important;
-            background-color: #451a03 !important;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.7) !important;
-            z-index: 25 !important;
-        }
-        /* DAY 3: Blue Towers & Portcullis */
-        #piece-left-tower {
-            bottom: 60px;
-            left: 0%;
-            width: 9%;
-            height: 160px;
-            z-index: 13;
-        }
-        #piece-left-tower.unlocked {
-            background: linear-gradient(to bottom, #1e40af, #1d4ed8);
-        }
-        #piece-right-tower {
-            bottom: 60px;
-            right: 0%;
-            width: 9%;
-            height: 160px;
-            z-index: 13;
-        }
-        #piece-right-tower.unlocked {
-            background: linear-gradient(to bottom, #1e40af, #1d4ed8);
-        }
-        #piece-portcullis {
-            bottom: 60px;
-            left: 45%;
-            width: 10%;
-            height: 45px;
-            z-index: 15;
-        }
-        #piece-portcullis.unlocked {
-            background: repeating-linear-gradient(90deg, #334155, #334155 3px, transparent 3px, transparent 8px);
-            border-color: #1e293b;
-        }
-        /* DAY 4: Keep Wall, Banquet Hall & Purple Turret */
-        #piece-keep-wall {
-            bottom: 140px;
-            left: 28%;
-            width: 44%;
-            height: 80px;
-            z-index: 12;
-        }
-        #piece-keep-wall.unlocked {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-        }
-        #piece-main-hall {
-            bottom: 140px;
-            left: 33%;
-            width: 34%;
-            height: 60px;
-            z-index: 13;
-        }
-        #piece-main-hall.unlocked {
-            background: linear-gradient(to top, #fbbf24, #f59e0b);
-        }
-        #piece-turret {
-            bottom: 220px;
-            left: 41%;
-            width: 18%;
-            height: 60px;
-            z-index: 13;
-        }
-        #piece-turret.unlocked {
-            background: linear-gradient(to bottom, #6b21a8, #7c3aed);
-        }
-        /* DAY 5: Flags, Moat & Crown Jewel */
-        #piece-flags {
-            bottom: 280px;
-            left: 49%;
-            width: 5px;
-            height: 40px;
-            z-index: 17;
-            border: none;
-        }
-        #piece-flags.unlocked {
-            background-color: #10b981;
-        }
-        #piece-flags.unlocked::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 5px;
-            width: 20px;
-            height: 12px;
-            background-color: #fbbf24;
-            clip-path: polygon(0 0, 100% 50%, 0 100%);
-        }
-        #piece-moat {
-            bottom: 0;
-            left: 5%;
-            width: 90%;
-            height: 18px;
-            border-radius: 12px 12px 0 0;
-            z-index: 20;
-        }
-        #piece-moat.unlocked {
-            background: linear-gradient(to bottom, #00f0ff, #0891b2);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-            border-color: #0891b2;
-        }
-        #piece-crown {
-            bottom: 305px;
-            left: 45%;
-            width: 10%;
-            height: 20px;
-            border-radius: 50% 50% 0 0;
-            z-index: 18;
-        }
-        #piece-crown.unlocked {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            border: 2px solid #b45309;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
-        }
-        /* Stats & Score */
-        .progress-container {
-            width: 100%;
-            background-color: #cbd5e1;
-            border-radius: 10px;
-            margin: 15px 0;
-            height: 18px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: var(--success);
-            transition: width 0.4s ease;
-        }
-        .stats-box {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            width: 100%;
-            gap: 12px;
-            margin-top: 12px;
-            text-align: center;
-        }
-        .stat-item {
-            background-color: #f8fafc;
-            border-radius: 8px;
-            padding: 10px;
-            border: 1px solid #e2e8f0;
-        }
-        .stat-val {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-        .stat-lbl {
-            font-size: 0.75rem;
-            color: #64748b;
-            text-transform: uppercase;
-        }
-        .log-container {
-            width: 100%;
-            margin-top: 15px;
-        }
-        .log-title {
-            font-size: 0.95rem;
-            font-weight: bold;
-            color: var(--primary);
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 5px;
-            margin-bottom: 8px;
-        }
-        .log-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 110px;
-            overflow-y: auto;
-        }
-        .log-item {
-            background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            padding: 5px 10px;
-            border-radius: 6px;
-            margin-bottom: 5px;
-            font-size: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            color: #334155;
-        }
-        /* Share Modal for Class/Multiplayer */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-        }
-        .modal-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 440px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .modal-card h3 {
-            margin-top: 0;
-            color: var(--primary);
-        }
-        .qr-box {
-            margin: 15px auto;
-            display: flex;
-            justify-content: center;
-        }
-        .reset-btn {
-            background-color: #e71d36;
-            color: white;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 12px;
-            width: 100%;
-            transition: background 0.2s;
-        }
-        .reset-btn:hover {
-            background-color: #b81d24;
-        }
-        footer {
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-            padding: 14px;
-            margin-top: 30px;
-            font-size: 0.82rem;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="header-left">
-            <h1>🏰 SageSure Claims Training & Castle Builder</h1>
-            <p>Interactive Mentimeter-Style Handbook Challenge (LND-30688)</p>
-        </div>
-        <div class="header-controls">
-            <button class="btn-header" onclick="openShareModal()">📱 Share / Join QR</button>
-            <button class="btn-header" id="sound-btn" onclick="toggleSound()">🔊 Sound: ON</button>
-        </div>
-    </header>
-
-    <div class="container">
-        <!-- LEFT: Study Console & Interactive Knowledge Checks -->
-        <div class="main-content">
-            <div class="day-nav">
-                <button class="day-tab active" onclick="switchDay(1)">Day 1: Workspace & Interiors I</button>
-                <button class="day-tab" onclick="switchDay(2)">Day 2: Estimating & Interiors II</button>
-                <button class="day-tab" onclick="switchDay(3)">Day 3: Editing II, Roofing & Exteriors</button>
-                <button class="day-tab" onclick="switchDay(4)">Day 4: Revisions & Contents</button>
-                <button class="day-tab" onclick="switchDay(5)">Day 5: Scenario & Week Review</button>
-            </div>
-
-            <!-- DAY 1 -->
-            <div id="day-1" class="flashcard-section active">
-                <div class="intro-box">
-                    <strong>Day 1 Focus:</strong> Cotality Product Introduction, Claims Workspace navigation, Estimate synchronization, and diagramming in Interiors I. Complete all 3 tasks to lay your castle's foundation, inner courtyard, and main gatehouse!
-                </div>
-                <div class="section-heading">
-                    <span>Day 1 Key Concepts (Click card to flip)</span>
-                </div>
-                <div class="flashcards-container">
-                    <div class="card-wrapper" onclick="flipCard(this, event)" id="card-1-1">
-                        <div class="card-front">
-                            <h3>Day 1 • Concept 1</h3>
-                            <p>What is the relationship between Cotality Claims Workspace and CoreLogic Estimate?</p>
-                            <span style="font-size: 0.78rem; opacity: 0.75; margin-top: 12px;">👆 Click to reveal answer</span>
-                        </div>
-                        <div class="card-back">
-                            <h3>Answer & Rule</h3>
-                            <p>All work done in Estimate will be fully visible within Workspace when you upload your claim file.</p>
-                            <div class="card-actions">
-                                <button class="card-btn mastered" onclick="completeTask('1-1', this, event)">Got It! (+1 Castle Block)</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-wrapper" onclick="flipCard(this, event)" id="card-1-2">
-                        <div class="card-front">
-                            <h3>Day 1 • Concept 2</h3>
-                            <p>In Interiors diagramming, what is the core difference between Segment Mode and Build Out Mode?</p>
-                            <span style="font-size: 0.78rem; opacity: 0.75; margin-top: 12px;">👆 Click to reveal answer</span>
-                        </div>
-                        <div class="card-back">
-                            <h3>Answer & Rule</h3>
-                            <p><strong>Segment Mode</strong> modifies the shape of an existing room. <strong>Build Out Mode</strong> builds a new room from an adjacent wall.</p>
-                            <div class="card-actions">
-                                <button class="card-btn mastered" onclick="completeTask('1-2', this, event)">Got It! (+1 Castle Block)</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="quiz-container" id="quiz-1">
-                    <h3>
-                        <span>Day 1 Knowledge Check</span>
-                        <span style="font-size: 0.85rem; color: var(--secondary);">Unlocks Main Gatehouse</span>
-                    </h3>
-                    <p class="quiz-scenario">Handbook Daily Mission 1 diagram puzzle (Page 11):</p>
-                    <p><strong>Question:</strong> In the Daily Mission 1 diagram, you are tasked with checking your first-floor Foyer and Hallway carefully. What element is missing and must be added to the north wall of the Foyer?</p>
-                    <div class="quiz-options">
-                        <button class="option-btn" onclick="checkAnswer(1, 'A', this)">A) Double French Exterior Patio Doors</button>
-                        <button class="option-btn" onclick="checkAnswer(1, 'B', this)">B) A 3' x 4' Window Opening</button>
-                        <button class="option-btn" onclick="checkAnswer(1, 'C', this)">C) An Angled Stairway (Stairs element connecting floors)</button>
-                        <button class="option-btn" onclick="checkAnswer(1, 'D', this)">D) A Ceramic Tile Floor opening</button>
-                    </div>
-                    <div class="quiz-feedback" id="feedback-1"></div>
-                </div>
-            </div>
-
-            <!-- DAY 2 -->
-            <div id="day-2" class="flashcard-section">
-                <div class="intro-box">
-                    <strong>Day 2 Focus:</strong> Estimating methods, Assemblies, Estimate Reviews (Action separate columns and ACV), Stairs Editor, and 3D Wall Editor. Raise the castle's left wall, right wall, and lower the drawbridge!
-                </div>
-                <div class="section-heading">
-                    <span>Day 2 Key Concepts (Click card to flip)</span>
-                </div>
-                <div class="flashcards-container">
-                    <div class="card-wrapper" onclick="flipCard(this, event)" id="card-2-1">
-                        <div class="card-front">
-                            <h3>Day 2 • Concept 1</h3>
-                            <p>How can you configure the estimate view to display Actions (Remove vs. Replace) in their own separate column?</p>
-                            <span style="font-size: 0.78rem; opacity: 0.75; margin-top: 12px;">👆 Click to reveal answer</span>
-                        </div>
-                        <div class="card-back">
-                            <h3>Answer & Rule</h3>
-                            <p>Go to the <strong>View tab</strong> in Estimate, and change the Action setting to "Separate Column". You can also choose short form.</p>
-                            <div class="card-actions">
-                                <button class="card-btn mastered" onclick="completeTask('2-1', this, event)">Got It! (+1 Castle Block)</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-wrapper" onclick="flipCard(this, event)" id="card-2-2">
-                        <div class="card-front">
-                            <h3>Day 2 • Concept 2</h3>
-                            <p>What is the primary benefit of utilizing the Wall Editor during diagramming?</p>
-                            <span style="font-size: 0.78rem; opacity: 0.75; margin-top: 12px;">👆 Click to reveal answer</span>
-                        </div>
-                        <div class="card-back">
-                            <h3>Answer & Rule</h3>
-                            <p>The Wall Editor lets us see a room from a <strong>3-dimensional perspective</strong>, making it easy to place doors, windows, and cabinet blocks.</p>
-                            <div class="card-actions">
-                                <button class="card-btn mastered" onclick="completeTask('2-2', this, event)">Got It! (+1 Castle Block)</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="quiz-container" id="quiz-2">
-                    <h3>
-                        <span>Day 2 Knowledge Check</span>
-                        <span style="font-size: 0.85rem; color: var(--secondary);">Unlocks Drawbridge</span>
-                    </h3>
-                    <p class="quiz-scenario">Handbook Learning Module 7.3 (Page 27):</p>
-                    <p><strong>Question:</strong> When dimensioning roof shapes, what is the recommended order of progression known as the "PER" method?</p>
-                    <div class="quiz-options">
-                        <button class="option-btn" onclick="checkAnswer(2, 'A', this)">A) Pitch, Elevation, Rise</button>
-                        <button class="option-btn" onclick="checkAnswer(2, 'B', this)">B) Perimeter, Extension, Ridge</button>
-                        <button class="option-btn" onclick="checkAnswer(2, 'C', this)">C) Plan, Eave-height, Run</button>
-                        <button class="option-btn" onclick="checkAnswer(2, 'D', this)">D) Pitch, Eave Length, Rafter Length</button>
-                    </div>
-                    <div class="quiz-feedback" id="feedback-2"></div>
-                </div>
-            </div>
-
-            <!-- DAY 3 -->
-            <div id="day-3" class="flashcard-section">
-                <div class="intro-box">
-                    <strong>Day 3 Focus:</strong> Search and Replace, Debris Calculator rules, Asphalt Roofing Assemblies, and Auto-Creating 3D Exterior Plans. Build the twin royal blue towers and steel portcullis!
-                </div>
-                <div class="section-heading">
-                    <span>Day 3 Key Concepts (Click card to flip)</span>
-                </div>
-                <div class="flashcards-container">
-                    <div class="card-wrapper" onclick="flipCard(this, event)" id="card-3-1">
-                        <div class="card-front">
-                            <h3>Day 3 • Concept 1</h3>
-                            <p>What UI notification appears when your estimate is currently filtered by a search?</p>
-                            <span style="font-size: 0.78rem; opacity: 0.75; margin-top: 12px;">👆 Click to reveal answer</span>
-                        </div>
-                        <div class="card-back">
-                            <h3>Answer & Rule</h3>
-                            <p>In the bottom-left corner, a red note is displayed: <strong>"Note: The estimate is currently filtered."</strong></p>
-                            <div class="card-actions">
-                                <button class="card-btn mastered" onclick="completeTask('3-1', this, event)">Got It! (+1 Castle Block)</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-wrapper" onclick="flipCard(this, event)" id="card-3-2">
-                        <div class=
+            height: 75px;
+            
